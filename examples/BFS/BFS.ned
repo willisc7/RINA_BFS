@@ -41,5 +41,5 @@ network BFS
         }
     connections:
         hostA.medium <--> DatarateChannel {  datarate = 100Mbps; delay = 100us; ber = 0; } <--> switch.medium[0];
-        switch.medium[1] <--> DatarateChannel {  datarate = 100Mbps; delay = 5s; ber = 0; } <--> hostB.medium;
+        switch.medium[1] <--> DatarateChannel {  datarate = 100Mbps; delay = 100us; ber = 0; } <--> hostB.medium;
 }

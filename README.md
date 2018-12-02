@@ -6,9 +6,9 @@
 3. Do the tictoc tutorial to get familiar with omnetpp basics (https://docs.omnetpp.org/tutorials/tictoc/)
 4. Download RINASim (https://github.com/kvetak/RINA), import it in omnetpp, and run anything in the examples folder to compile common modules
 	- e.g. highlight ./examples/Congestion/SimpleRelayCongestion in navigation pane and click run button)
-5. Read through Vladimir Veseley's webinars for RINA basics (posted on https://rinasim.omnetpp.org/ under Webinars)
+5. Read through Vladimir Veseley's webinars for RINA basics (see documentation folder)
 6. Get familiar with the RINASim modules by reading some of the documentation in the policy header files (e.g. C:\omnetpp-5.4.1\samples\RINA\policies\DIF\RMT\MaxQueue\RMTMaxQBase.h). Note that not all header files have documentations, which should be improved upon in further RINASim releases.
-7. Using guidance in the second webinar, try to start implementing your own policies
+7. Using guidance in the second webinar (see documentation folder), try to start implementing your own policies
 	- Good time to work on C++ basics
 
 ### Version changelog

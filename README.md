@@ -1,7 +1,6 @@
-#RINA Simulator
-====
+# RINA Simulator
 
-###RINASim for Beginners
+### RINASim for Beginners
 1. Download omnetpp (https://omnetpp.org/download/)
 2. Follow the installation instructions to complile and run it (https://doc.omnetpp.org/omnetpp/InstallGuide.pdf)
 3. Do the tictoc tutorial to get familiar with omnetpp basics (https://docs.omnetpp.org/tutorials/tictoc/)
@@ -12,7 +11,7 @@
 7. Using guidance in the second webinar, try to start implementing your own policies
 	- Good time to work on C++ basics
 
-###Version changelog
+### Version changelog
 * February 2017 - Refactored examples, towards OMNeT++ 5.1 compatibility
 * October 2016 - Socket and CDAP API added, compilable on OMNeT++ 5.0
 * August 2016 - The last release compatible with OMNeT++ 4.6
@@ -34,7 +33,7 @@
 * November 2014 - Brussels RV1 with AllNodes examples
 * October 2014  - Madrid F2F meeting with working SimpleRelay and TwoCSs scenarios
 
-###Resources
+### Resources
 * [RINASim official project webpage](http://rinasim.omnetpp.org)
 * [VMWare Out-of-the-box virtual machine with RINASim](http://nes.fit.vutbr.cz/ivesely/vm/RINASim.zip)
 * [Doxygen source code documentation](http://nes.fit.vutbr.cz/ivesely/doxy/)
@@ -44,7 +43,7 @@
 * [PRISTINE webpage](http://ict-pristine.eu/)	 
 * [OpenSourceProject Git with archived RINASim releases](https://opensourceprojects.eu/p/pristine/rinasimulator/rinasim/)
 
-###Papers
+### Papers
 
 * VESELY, Vladimir. A NEW DAWN OF NAMING, ADDRESSING AND ROUTING ON THE INTERNET. Brno, 2016. Available from: http://www.fit.vutbr.cz/study/DP/PD.php?id=515. PhD. Thesis. Brno University of Technology, Faculty of Information Technology. 2016-04-12. Supervisor Sveda Miroslav.
 * S. L. Gaixas, J. Perello, D. Careglio, E. Grasa, N. Davies and P. Thompson. Assuring Absolute QoS Guarantees for Heterogeneous Services in RINA Networks with delta-Q. IEEE NetCloud 2016, December 2016.
@@ -55,7 +54,7 @@
 * VESELY Vladimir, MAREK Marcel, HYKEL Tomas and RYSAVY Ondrej. Skip This Paper - RINASim: Your Recursive InterNetwork Architecture Simulator. In: Proceedings of 2nd OMNeT++ Community Summit. Ithaca, NY: Cornell University Library, 2015, pp. 1-4. ISSN 2331-8422. Available from: https://arxiv.org/abs/1509.03550
 * VESELY Vladimir, MAREK Marcel, HYKEL TomaS, RYSAVY Ondrej and LICHTNER Ondrej. Deliverable 2.4: RINASim - basic functionality. Brno, 2015. Available from: http://ict-pristine.eu/wp-content/uploads/2013/12/pristine-d24-rinasim-v1_0.pdf
 
-###Directory structure
+### Directory structure
 
 	/examples					... scenarios testing RINA stack
 		/Basics					... simple testing scenarios
@@ -79,7 +78,7 @@
 		fingerprints.sh			... batch for checking/updating fingerprints
 		slocstats.sh			... counts source lines of code
 
-###Available policies
+### Available policies
 	/DAF                           ... DAF policies
 	/DIF                           ... DIF policies
 	    /FA                        ... policies related to FA modules

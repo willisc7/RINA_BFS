@@ -8,8 +8,13 @@
 	- e.g. highlight ./examples/Congestion/SimpleRelayCongestion in navigation pane and click run button)
 5. Read through Vladimir Veseley's webinars for RINA basics (see documentation folder)
 6. Get familiar with the RINASim modules by reading some of the documentation in the policy header files (e.g. C:\omnetpp-5.4.1\samples\RINA\policies\DIF\RMT\MaxQueue\RMTMaxQBase.h). Note that not all header files have documentations, which should be improved upon in further RINASim releases.
-7. Using guidance in the second webinar (see documentation folder), try to start implementing your own policies
-	- Good time to work on C++ basics
+7. Work on getting your own policy function. It may be helpful to use guidance in the second webinar (see documentation folder). This is a good time to work on C++ basics. I found the following example helpful:
+	- Copy /RINA/examples/Webinars/EFCPPolicyTest to /RINA/examples/EFCPPolicyTest2. In all of the files under /RINA/examples/EFCPPolicyTest2, change all references of "EFCPPolicyTest" to "EFCPPolicyTest2"
+	- Copy /RINA/policies/DIF/RMT/Monitor/REDMonitor to /RINA/policies/DIF/RMT/Monitor/REDMonitor2. In all of the files under /RINA/policies/DIF/RMT/Monitor/REDMonitor2, change all references of "REDMonitor" to "REDMonitor2"
+	- Edit /RINA/examples/EFCPPolicyTest2/omnetpp.ini and change the value of "**.switch.relayIpc.relayAndMux.qMonitorPolicyName" to "REDMonitor2". This tells omnetpp to use your new monitor policy within the switch module. Save the file.
+	- Edit /RINA/policies/DIF/RMT/Monitor/REDMonitor2/REDMonitor2.cc and in the AvgQLenMonitor::postPDUInsertion function insert a line containing the following: EV << "TEST" << endl;
+	- Run the simulation and notice that "TEST" is displayed in the console output
+
 
 ### Version changelog
 * February 2017 - Refactored examples, towards OMNeT++ 5.1 compatibility

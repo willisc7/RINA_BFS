@@ -44,34 +44,26 @@ void AvgQLenMonitor::preQueueRemoval(RMTQueue* queue)
 // Assumed behavior: runs every time a PDU is put in the queue
 void AvgQLenMonitor::postPDUInsertion(RMTQueue* queue)
 {
-    // initialize prevRegenCycleTimestamp when first PDU is inserted in the queue
-    if (getPrevRegenCycleTimestamp() == 0)
+    // first PDU inserted into the queue
+    if (getPrevRegenCycleTimestamp() == 0 && getCurrentRegenCycleTimestamp()== 0)
     {
-        setPrevRegenCycleTimestamp(queue->getQTime());
-        EV << "!!!INITIAL REGENERATION CYCLE STARTED AT " + getPrevRegenCycleTimestamp().str() << endl;
+        // initialize timestamp and queue length for the current regeneration cycle
+        setCurrentRegenCycleTimestamp(queue->getQTime());
+        EV << "!!!INITIAL REGENERATION CYCLE STARTED AT " + getCurrentRegenCycleTimestamp().str() << endl;
+        setCurrentRegenCycleQLen(queue->getLength());
+        EV << "!!!CURRENT LENGTH OF QUEUE IS " + std::to_string(getCurrentRegenCycleQLen()) << endl;
+
+        return;
     }
 
-    // set current length of the queue
-    setCurrentRegenCycleQLen(queue->getLength());
-    EV << "!!!CURRENT LENGTH OF QUEUE IS " + std::to_string(getCurrentRegenCycleQLen()) << endl;
+    // subsequent PDU insertion into queue
+    // rotate variables between "previous" and "current"
+    simtime_t prevTimestamp = getCurrentRegenCycleTimestamp();
+    simtime_t currentTimestamp = queue->getQTime();
+    double prevQLen = getCurrentRegenCycleQLen();
+    double currentQLen = queue->getLength();
 
-    int length = queue->getLength();
-
-    double avg = qAvgLengths[queue];
-    double weight = qWeights[queue];
-
-    simtime_t qTime = queue->getQTime();
-
-    if (length > 0)
-    {
-        avg = (1 - weight) * avg + weight * length;
-    }
-    else
-    {
-        const double m = SIMTIME_DBL(simTime() - qTime);
-        avg = pow(1 - weight, m) * avg;
-    }
-
-    qAvgLengths[queue] = avg;
+    setCurrentRegenCycleQLen(prevQLen + ((currentTimestamp.dbl() - prevTimestamp.dbl()) * prevQLen));
+    EV << "$$$ TEST: " + std::to_string(getCurrentRegenCycleQLen()) << endl;
 }
 

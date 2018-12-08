@@ -33,9 +33,11 @@ class AvgQLenMonitor : public RMTQMonitorBase
   friend class REDDropper;
 
   public:
+    virtual void prePDUInsertion(RMTQueue* queue);
     virtual void postPDUInsertion(RMTQueue* queue);
     virtual void postQueueCreation(RMTQueue* queue);
     virtual void preQueueRemoval(RMTQueue* queue);
+    virtual void postPDURelease(RMTQueue* queue);
 
     const AvgQLenParamMap& getAvgLengths() const {
         return qAvgLengths;
@@ -77,6 +79,14 @@ class AvgQLenMonitor : public RMTQMonitorBase
         currentRegenCycleTimestamp = timestamp;
     }
 
+    const int getPrevRegenCycleQLen() {
+        return prevRegenCycleQLen;
+    }
+
+    void setPrevRegenCycleQLen(int qLength) {
+        prevRegenCycleQLen = qLength;
+    }
+
     const int getCurrentRegenCycleQLen() {
         return currentRegenCycleQLen;
     }
@@ -92,11 +102,10 @@ class AvgQLenMonitor : public RMTQMonitorBase
 
     // Regeneration Cycle = time in between queue length being greater than or equal to one (Raj Jain)
     // Keeps track of previous/current regeneration cycle's timestamp
-
     simtime_t prevRegenCycleTimestamp;
     simtime_t currentRegenCycleTimestamp;
-
-    int currentRegenCycleQLen;
+    double prevRegenCycleQLen;
+    double currentRegenCycleQLen;
 };
 
 #endif /* AvgQLenMonitor_H_ */

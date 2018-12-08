@@ -41,29 +41,51 @@ void AvgQLenMonitor::preQueueRemoval(RMTQueue* queue)
     qCounters.erase(queue);
 }
 
-// Assumed behavior: runs every time a PDU is put in the queue
-void AvgQLenMonitor::postPDUInsertion(RMTQueue* queue)
+void AvgQLenMonitor::prePDUInsertion(RMTQueue* queue)
 {
-    // first PDU inserted into the queue
-    if (getPrevRegenCycleTimestamp() == 0 && getCurrentRegenCycleTimestamp()== 0)
+    // only runs when first PDU inserted into the queue
+    if (getPrevRegenCycleQLen() == 0 && getCurrentRegenCycleQLen()== 0)
     {
-        // initialize timestamp and queue length for the current regeneration cycle
-        setCurrentRegenCycleTimestamp(queue->getQTime());
-        EV << "!!!INITIAL REGENERATION CYCLE STARTED AT " + getCurrentRegenCycleTimestamp().str() << endl;
-        setCurrentRegenCycleQLen(queue->getLength());
-        EV << "!!!CURRENT LENGTH OF QUEUE IS " + std::to_string(getCurrentRegenCycleQLen()) << endl;
+        // initialize queue lengths
+        setPrevRegenCycleQLen(0);
+        EV << "!!!prevRegenCycleQLen INITIALIZED TO " + std::to_string(getPrevRegenCycleQLen()) << endl;
+        setCurrentRegenCycleQLen(0);
+        EV << "!!!currentRegenCycleQLen INITIALIZED TO " + std::to_string(getPrevRegenCycleQLen()) << endl;
 
         return;
     }
-
-    // subsequent PDU insertion into queue
-    // rotate variables between "previous" and "current"
-    simtime_t prevTimestamp = getCurrentRegenCycleTimestamp();
-    simtime_t currentTimestamp = queue->getQTime();
-    double prevQLen = getCurrentRegenCycleQLen();
-    double currentQLen = queue->getLength();
-
-    setCurrentRegenCycleQLen(prevQLen + ((currentTimestamp.dbl() - prevTimestamp.dbl()) * prevQLen));
-    EV << "$$$ TEST: " + std::to_string(getCurrentRegenCycleQLen()) << endl;
 }
 
+void AvgQLenMonitor::postPDUInsertion(RMTQueue* queue)
+{
+    // if queue length is 1, then there's no congestion so no need to start monitoring
+    if (queue->getLength() == 1)
+    {
+        return;
+    }
+
+    // runs each time a PDU is inserted into the queue
+    // first, rotate variables from "current" to "previous"
+    double prevQLen = getCurrentRegenCycleQLen();
+    simtime_t prevTimestamp = getCurrentRegenCycleTimestamp();
+    double currentQLen = queue->getLength();
+    simtime_t currentTimestamp = queue->getQTime();
+
+    // second, calculate current regeneration cycle queue length and record timestamp and current cycle's queue length
+    setCurrentRegenCycleQLen(currentQLen + ((currentTimestamp.dbl() - prevTimestamp.dbl()) * prevQLen));
+    EV << "!!!PDU INSERTED INTO QUEUE. CURRENT LENGTH OF QUEUE IS " + std::to_string(getCurrentRegenCycleQLen()) << endl;
+    setCurrentRegenCycleTimestamp(currentTimestamp);
+    EV << "!!!PDU INSERTED INTO QUEUE AT " + getCurrentRegenCycleTimestamp().str() << endl;
+}
+
+void AvgQLenMonitor::postPDURelease(RMTQueue* queue)
+{
+    // if queue length is 0 and current regeneration cycle's queue length is not 0, then there was
+    // congestion and now it's gone so start a new regeneration cycle
+    if (queue->getLength() == 0 && getCurrentRegenCycleQLen() != 0)
+    {
+        setPrevRegenCycleQLen(getCurrentRegenCycleQLen());
+        setCurrentRegenCycleQLen(0);
+        EV << "!!!STARTING NEW REGENERATION CYCLE STARTED AT " + queue->getQTime().str() << endl;
+    }
+}

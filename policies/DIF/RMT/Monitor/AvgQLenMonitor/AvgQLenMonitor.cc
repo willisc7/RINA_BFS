@@ -65,6 +65,7 @@ void AvgQLenMonitor::postPDUInsertion(RMTQueue* queue)
 
 void AvgQLenMonitor::postPDURelease(RMTQueue* queue)
 {
+    EV << "!!!PDU RELEASED FROM QUEUE. CURRENT LENGTH OF QUEUE IS " + std::to_string(getCurrentRegenCycleAvgQLen()) << endl;
     // if queue length is 0 and current regeneration cycle's queue length is not 0, then there was
     // congestion and now it's gone so start a new regeneration cycle
     if (queue->getLength() == 0 && getCurrentRegenCycleAvgQLen() != 0)

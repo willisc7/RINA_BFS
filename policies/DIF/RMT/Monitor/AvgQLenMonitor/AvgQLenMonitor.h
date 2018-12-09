@@ -33,7 +33,6 @@ class AvgQLenMonitor : public RMTQMonitorBase
   friend class REDDropper;
 
   public:
-    virtual void prePDUInsertion(RMTQueue* queue);
     virtual void postPDUInsertion(RMTQueue* queue);
     virtual void postQueueCreation(RMTQueue* queue);
     virtual void preQueueRemoval(RMTQueue* queue);
@@ -63,14 +62,6 @@ class AvgQLenMonitor : public RMTQMonitorBase
         qWeights = weights;
     }
 
-    const simtime_t getPrevRegenCycleTimestamp() {
-        return prevRegenCycleTimestamp;
-    }
-
-    void setPrevRegenCycleTimestamp(simtime_t timestamp) {
-        prevRegenCycleTimestamp = timestamp;
-    }
-
     const simtime_t getCurrentRegenCycleTimestamp() {
         return currentRegenCycleTimestamp;
     }
@@ -79,20 +70,20 @@ class AvgQLenMonitor : public RMTQMonitorBase
         currentRegenCycleTimestamp = timestamp;
     }
 
-    const int getPrevRegenCycleQLen() {
-        return prevRegenCycleQLen;
+    const int getPrevRegenCycleAvgQLen() {
+        return prevRegenCycleAvgQLen;
     }
 
-    void setPrevRegenCycleQLen(int qLength) {
-        prevRegenCycleQLen = qLength;
+    void setPrevRegenCycleAvgQLen(int qLength) {
+        prevRegenCycleAvgQLen = qLength;
     }
 
-    const int getCurrentRegenCycleQLen() {
-        return currentRegenCycleQLen;
+    const int getCurrentRegenCycleAvgQLen() {
+        return currentRegenCycleAvgQLen;
     }
 
-    void setCurrentRegenCycleQLen(int qLength) {
-        currentRegenCycleQLen = qLength;
+    void setCurrentRegenCycleAvgQLen(int qLength) {
+        currentRegenCycleAvgQLen = qLength;
     }
 
   public:
@@ -102,10 +93,9 @@ class AvgQLenMonitor : public RMTQMonitorBase
 
     // Regeneration Cycle = time in between queue length being greater than or equal to one (Raj Jain)
     // Keeps track of previous/current regeneration cycle's timestamp
-    simtime_t prevRegenCycleTimestamp;
     simtime_t currentRegenCycleTimestamp;
-    double prevRegenCycleQLen;
-    double currentRegenCycleQLen;
+    double prevRegenCycleAvgQLen = 0;
+    double currentRegenCycleAvgQLen = 0;
 };
 
 #endif /* AvgQLenMonitor_H_ */

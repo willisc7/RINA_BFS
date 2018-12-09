@@ -41,21 +41,6 @@ void AvgQLenMonitor::preQueueRemoval(RMTQueue* queue)
     qCounters.erase(queue);
 }
 
-void AvgQLenMonitor::prePDUInsertion(RMTQueue* queue)
-{
-    // only runs when first PDU inserted into the queue
-    if (getPrevRegenCycleQLen() == 0 && getCurrentRegenCycleQLen()== 0)
-    {
-        // initialize queue lengths
-        setPrevRegenCycleQLen(0);
-        EV << "!!!prevRegenCycleQLen INITIALIZED TO " + std::to_string(getPrevRegenCycleQLen()) << endl;
-        setCurrentRegenCycleQLen(0);
-        EV << "!!!currentRegenCycleQLen INITIALIZED TO " + std::to_string(getPrevRegenCycleQLen()) << endl;
-
-        return;
-    }
-}
-
 void AvgQLenMonitor::postPDUInsertion(RMTQueue* queue)
 {
     // if queue length is 1, then there's no congestion so no need to start monitoring
@@ -66,14 +51,14 @@ void AvgQLenMonitor::postPDUInsertion(RMTQueue* queue)
 
     // runs each time a PDU is inserted into the queue
     // first, rotate variables from "current" to "previous"
-    double prevQLen = getCurrentRegenCycleQLen();
+    double prevQLen = getCurrentRegenCycleAvgQLen();
     simtime_t prevTimestamp = getCurrentRegenCycleTimestamp();
     double currentQLen = queue->getLength();
     simtime_t currentTimestamp = queue->getQTime();
 
     // second, calculate current regeneration cycle queue length and record timestamp and current cycle's queue length
-    setCurrentRegenCycleQLen(currentQLen + ((currentTimestamp.dbl() - prevTimestamp.dbl()) * prevQLen));
-    EV << "!!!PDU INSERTED INTO QUEUE. CURRENT LENGTH OF QUEUE IS " + std::to_string(getCurrentRegenCycleQLen()) << endl;
+    setCurrentRegenCycleAvgQLen(currentQLen + ((currentTimestamp.dbl() - prevTimestamp.dbl()) * prevQLen));
+    EV << "!!!PDU INSERTED INTO QUEUE. CURRENT LENGTH OF QUEUE IS " + std::to_string(getCurrentRegenCycleAvgQLen()) << endl;
     setCurrentRegenCycleTimestamp(currentTimestamp);
     EV << "!!!PDU INSERTED INTO QUEUE AT " + getCurrentRegenCycleTimestamp().str() << endl;
 }
@@ -82,10 +67,10 @@ void AvgQLenMonitor::postPDURelease(RMTQueue* queue)
 {
     // if queue length is 0 and current regeneration cycle's queue length is not 0, then there was
     // congestion and now it's gone so start a new regeneration cycle
-    if (queue->getLength() == 0 && getCurrentRegenCycleQLen() != 0)
+    if (queue->getLength() == 0 && getCurrentRegenCycleAvgQLen() != 0)
     {
-        setPrevRegenCycleQLen(getCurrentRegenCycleQLen());
-        setCurrentRegenCycleQLen(0);
+        setPrevRegenCycleAvgQLen(getCurrentRegenCycleAvgQLen());
+        setCurrentRegenCycleAvgQLen(0);
         EV << "!!!STARTING NEW REGENERATION CYCLE STARTED AT " + queue->getQTime().str() << endl;
     }
 }
